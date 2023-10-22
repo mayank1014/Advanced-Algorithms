@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Advance_Algorithms_Lab_Tasks
 Advance Algorithms subject lab tasks sem 5. 
 
