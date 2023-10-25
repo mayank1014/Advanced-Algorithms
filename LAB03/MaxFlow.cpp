@@ -1,85 +1,81 @@
 #include <bits/stdc++.h>
+
+#define n 6
 using namespace std;
-
-void addBackEdg(vector<vector<int>> &graph,vector<int> &apath,int maxbc){
-    for(int i=0;i<apath.size()-1;i++){
-	   int weight = graph[i][i+1];
-	   graph[i+1][i] += weight;
-	   graph[i][i+1] -= maxbc;
-	}
+bool bfs(int rgraph[n][n],int s,int t,int parent[]){
+ 	int visited[n] = {0};
+ 	queue<int> q;
+ 	q.push(s);
+ 	visited[s]=1;
+ 	parent[s]=-1;
+	 
+ 	while(!q.empty())
+ 	{
+     	int u = q.front();
+     	q.pop();
+     	for(int v=0; v<n; v++){
+         	if(visited[v]==0 && rgraph[u][v]>0){
+             	if(v==t){
+                 	parent[v]=u;
+                 	return true;
+             	}
+            	 
+             	q.push(v);
+             	visited[v]=1;
+             	parent[v]=u;
+         	}
+     	}
+ 	}
+ 	return false;
 }
 
-void augmentedPath(vector<vector<int>> &graph,vector<bool> &visited,vector<int> &temp,vector<int> &augmentPath,int currentbc,int &maxbc,int s,int t){
+int fordFulkerson( int g[n][n], int s, int t){
+	int rgraph[n][n];
+	//creating the graph
+	for(int u=0;u<n;u++){
+    	for(int v=0;v<n;v++){
+        	rgraph[u][v] = g[u][v];
+    	}
+	}
     
-    if(s==t){
-        temp.push_back(t);
-        if(INT_MAX!=currentbc && maxbc<currentbc){
-            maxbc = currentbc;
-            augmentPath = temp;
-        }
-        // apath.push_back(temp);
-        temp.pop_back();
-        return;
-    }
+	int parent[n];
+	int max_flow=0;
     
-    visited[s] = true;
-    temp.push_back(s);
+	while(bfs(rgraph,s,t,parent)){
+    	int path_flow = INT_MAX;
+   	 
+    	for(int v=t; v!=s; v=parent[v]){
+        	int u = parent[v];
+        	path_flow = min(path_flow,rgraph[u][v]);
+    	}
+   	 
+    	for(int v=t; v!=s; v=parent[v])
+    	{
+        	int u = parent[v];
+        	rgraph [u][v] -= path_flow;
+        	rgraph [v][u] += path_flow;
+    	}
+   	 
+    	max_flow += path_flow;
+	}
     
-    auto adj = graph[s];
-    for(int j=0;j<=t;j++){
-        if(0!=graph[s][j] && !visited[j]){
-            currentbc = min(currentbc,graph[s][j]);
-            augmentedPath(graph,visited,temp,augmentPath,currentbc,maxbc,j,t);
-        }
-    }
-    
-    visited[s] = false;
-    temp.pop_back();
+	return max_flow;
 }
 
-int main() {
-	int nodes = 5;
-	vector<vector<int>> graph(nodes,vector<int>(nodes,0));
-	graph[0][1] = 3;
-	graph[0][2] = 3;
-	graph[2][1] = 1;
-	graph[1][4] = 2;
-	graph[2][3] = 2;
-	graph[3][4] = 3;
-	
-	
-	int max_flow = 0;
-	
-	while(true){
-	    vector<bool> visited(nodes,false);
-	    int source = 0;
-	    int sink = 4;
-	    int maxbc = INT_MIN;
-	    vector<int> temp;
-	    vector<int> apath;
-	    augmentedPath(graph,visited,temp,apath,INT_MAX,maxbc,source,sink);
-	    cout<<maxbc<<endl;
-	    for(int w : apath){
-	        cout<<w<<"->";
-	    }
-	    cout<<endl;
-	   // for(auto a : apath){
-	   //     for(int w : a){
-	   //         cout<<w<<"->";
-	   //     }
-	   //     cout<<endl;
-	   // }
-	   
-	   //vector<int> choosen_path = chooseBestPath(apath);
-	   
-	   if(INT_MIN==maxbc){
-	       break;
-	   }
-	   max_flow += maxbc;
-	   
-	   addBackEdg(graph,apath,maxbc);
-	}
-    cout<<max_flow;
-	
+int main()
+{
+	int g[n][n]={{0,16,13,0,0,0},
+             	{0,0,10,12,0,0},
+             	{0,4,0,0,14,0},
+             	{0,0,9,0,0,20},
+             	{0,0,0,7,0,4},
+             	{0,0,0,0,0,0}
+	};
+   
+	int max_flow = fordFulkerson(g,0,5);
+	cout<<"Max flow is: "<<max_flow;
+    
+ 
+   
 	return 0;
 }
