@@ -57,3 +57,9 @@ int main() {
 
     return 0;
 }
+
+// TestCase:
+// String: ababcabcabababd
+// Pattern: ababd
+
+// Prefix table: 0 0 1 2 0 
