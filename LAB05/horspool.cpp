@@ -58,3 +58,13 @@ int main() {
 
     return 0;
 }
+
+//TestCase
+// Text: JIM_SAW_ME_IN_A_BARBER_SHOP
+// Pattern: BARBER
+
+// Table: 
+// B : 2
+// A : 4
+// R : 6
+// E : 1
