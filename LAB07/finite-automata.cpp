@@ -1,70 +1,31 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define NO_OF_CHARS 256
 
-int getNextState(string pat, int M, int state, int x)
-{
-	if (state < M && x == pat[state])
-		return state + 1;
+void string_matching(int state_transition_table[4][2], int n, int m, string t) {
+    cout << "Pattern occurred at indexes: ";
+    int q = 0;
 
-	int ns, i;
+    for (int i = 0; i < n; i++) {
+        q = state_transition_table[q][t[i] - 'a'];
 
-	for (ns = state; ns > 0; ns--)
-	{
-		if (pat[ns - 1] == x)
-		{
-			for (i = 0; i < ns - 1; i++)
-				if (pat[i] != pat[state - ns + 1 + i])
-					break;
-			if (i == ns - 1)
-				return ns;
-		}
-	}
-
-	return 0;
+        if (q == m) {
+            cout << i - m + 1 << " "; // Pattern found at this index
+        }
+    }
 }
 
-void computeTF(string pat, int M, int TF[][NO_OF_CHARS])
-{
-	int state, x;
-	for (state = 0; state <= M; ++state)
-		for (x = 0; x < NO_OF_CHARS; ++x)
-			TF[state][x] = getNextState(pat, M, state, x);
-}
+int main() {
+    string s = "abaabbabbaabbb"; // The input text
+    int n = s.size(); // Size of the input text
+    string pattern = "aab"; // The pattern to search for
+    int m = pattern.size(); // Size of the pattern
 
-void search(string pat, string txt)
-{
-	int M = pat.size();
-	int N = txt.size();
+    int state_transition_table[4][2] = { 1, 0, // Finite automaton's state transition table
+                                         2, 0,
+                                         1, 3,
+                                         1, 0 };
 
-	int TF[M + 1][NO_OF_CHARS];
+    string_matching(state_transition_table, n, m, s); // Call the pattern matching function
 
-	computeTF(pat, M, TF);
-	bool found = false;
-	int i, state = 0;
-	for (i = 0; i < N; i++)
-	{
-		state = TF[state][txt[i]];
-		if (state == M)
-		{
-			found = true;
-			cout << " Pattern found at index " << i - M + 1 << endl;
-		}
-	}
-
-	if(!found)
-		cout << "Pattern Not Found" << endl;
-}
-
-int main()
-{
-	string txt, pat;
-	cout << "Enter Text : ";
-	cin >> txt;
-
-	cout << "Enter your pattern to be searched :";
-	cin >> pat;
-
-	search(pat, txt);
-	return 0;
+    return 0;
 }
