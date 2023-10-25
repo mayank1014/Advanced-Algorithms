@@ -1,54 +1,54 @@
-// Sum of subset problem using 0/1 knapsack solution
 #include <bits/stdc++.h>
 using namespace std;
 
-void sumOfSubset(vector<int> &s,int n,int target){
-    // here s is equal to profit and weight array, so profit = weight = s
-    vector<vector<int>> dp(n+1,vector<int>(target+1,0));
-    for(int i=0;i<n+1;i++) dp[0][i];
-    for(int i=0;i<n+1;i++) dp[i][0];
+int n;
 
-    for(int i=1;i<n+1;i++){
-        for(int j=1;j<target+1;j++){
-            if(s[i-1]<=j){
-                dp[i][j] = max(dp[i-1][j],s[i-1]+dp[i-1][j-s[i-1]]);
-            }else{
-                dp[i][j] = dp[i-1][j];
-            }
+bool dynamic_knapsack(int p[], int w[], int c, int v) {
+    vector<vector<int>> mat(n + 1, vector<int>(c + 1, 0));
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 0; j <= c; j++) {
+            if (w[i - 1] <= j)
+                mat[i][j] = max(mat[i - 1][j], p[i - 1] + mat[i - 1][j - w[i - 1]]);
+            else
+                mat[i][j] = mat[i - 1][j];
         }
-    }
-    // DP Table
-    cout<<"DP Table :- ";
-    for(int i=0;i<n+1;i++){
-        for(int j=0;j<target+1;j++){
-            cout<<dp[i][j]<<" ";
-        }
-        cout<<endl;
     }
     
-    vector<int> solution(n,0);
-    int i=n,j=target;
-    while(0<i && 0<j){
-        if(dp[i][j]!=dp[i-1][j]){
-            solution[i-1] = 1;
-            j -= s[i-1];
-        }
-        i--;
-    }
-    cout<<"Solution :- ";
-    for(int e : solution){
-        cout<<e<<" ";
-    }
-    // cout<<dp[n][target]<<endl;
+    if(mat[n][c] == v)
+       return true;
+    
+    else
+       return false;
+
+   
 }
 
-int main(){
-    int n,target;
-    cin>>n>>target;
-    vector<int> s(n);
-    for(int i=0;i<n;i++){
-        cin>>s[i];
+int main() {
+    cout << "Enter length of array: " << endl;
+    cin >> n;
+    int array[n], profit[n], weight[n];
+    cout << "Enter array: " << endl;
+    for (int i = 0; i < n; i++) {
+        cin >> array[i];
     }
-    sumOfSubset(s,n,target);
-    return 0;
+    cout << "Enter sum: " << endl;
+    int sum;
+    cin >> sum;
+
+    int capacity, assumed_profit;
+    for (int i = 0; i < n; i++) {
+        profit[i] = array[i];
+        weight[i] = array[i];
+    }
+
+    capacity = sum;
+    assumed_profit = sum;
+
+    if (dynamic_knapsack(profit, weight, capacity, assumed_profit))
+        cout << "True";
+    else
+        cout << "False";
+
+return 0;
 }
