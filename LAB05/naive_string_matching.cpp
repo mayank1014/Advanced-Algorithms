@@ -15,18 +15,19 @@ vector<int> naiveApproach(string &text,string &pattern){
             }
         }
         if(is_matched){
-            ans.push_back(t+1);
+            ans.push_back(t);
         }
     }
     return ans;
 }
 
 int main(){
-    string text,pattern;
-    getline(cin,text);
-    getline(cin,pattern);
-    // cin>>text>>pattern;
-    vector<int> indexs = naiveApproach(text,pattern);
+   string str,pattern;
+	cout<<"Enter the string : "<<endl;
+	cin >> str;
+	cout<<"Enter the pattern that you want to find : "<<endl;
+	cin >> pattern;
+    vector<int> indexs = naiveApproach(str,pattern);
     for(int i : indexs){
         cout<<"pattern match at : "<<i<<"\n";
     }
